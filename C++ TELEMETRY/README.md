@@ -142,14 +142,5 @@ cmake --build . --config Release
 ./TelemetryEngine
 ```
 
----
-
-## Amazon Systems Development / Interview Talking Points
-
-1. **Why Ring Buffer over `std::queue`?**
-   - `std::queue` is backed by `std::deque`, which allocates chunks of memory dynamically on the heap. In low-latency systems, heap allocations trigger locks in the memory allocator and cause memory fragmentation. A pre-allocated bounded ring buffer guarantees $O(1)$ operations with zero heap churn.
-2. **Cache Locality**:
-   - `TelemetryPacket` is tightly packed (32 bytes), fitting cleanly into modern 64-byte L1 cache lines (2 packets per cache line), reducing cache misses under high throughput.
-3. **Lock Contention Under Scaling**:
-   - As observed in our benchmark, throughput scales from 4.0M pkts/sec at 1P-1C to 2.0M pkts/sec at 8P-4C. This illustrates mutex contention on a single shared lock under extreme core load, leading into discussion of next-level optimizations such as Single-Producer Single-Consumer (SPSC) lock-free ring buffers or partitioned sharded queues.
+---timizations such as Single-Producer Single-Consumer (SPSC) lock-free ring buffers or partitioned sharded queues.
 
